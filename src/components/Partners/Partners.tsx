@@ -51,10 +51,9 @@ export const Partners: React.FC<PartnersBlock> = ({ partners }) => {
               >
                 <ImageMedia
                   resource={partner.partner}
-                  size="(max-width: 1468px) 20vw, 250px"
+                  sizes="(max-width: 1468px) 20vw, 250px"
                   fill={true}
                   imgClassName="object-contain"
-                  quality={100}
                 />
               </div>
             </SwiperSlide>
