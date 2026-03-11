@@ -101,33 +101,44 @@ jobs:
 
           # --- Clean up backups older than 7 days ---
           # How it works:
-          #   1. 'cls' lists files in the remote directory with timestamps
-          #   2. We compare each file's date to the cutoff (7 days ago)
-          #   3. Files older than the cutoff get deleted
+          #   1. List remote files in a single lftp session
+          #   2. Build a list of old files by comparing dates locally
+          #   3. Delete all old files in one lftp session (single connection = fast)
           CUTOFF=$(date -d '7 days ago' +%Y%m%d)
 
-          lftp -c "
+          # Step 1: Get file list from remote (single connection)
+          FILE_LIST=$(lftp -c "
             set ftp:ssl-auth TLS
             set ftp:ssl-force true
             set ftp:ssl-protect-data true
             set ssl:verify-certificate no
             open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
             cd '$REMOTE_DIR';
-            cls --sort=date -1 *.sql.gz
-          " | while read -r FILE; do
-            # Extract the date from filename: moodbox-backup-YYYYMMDD-HHMMSS.sql.gz
+            cls -1 *.sql.gz
+          ")
+
+          # Step 2: Build lftp delete commands for old files
+          DELETE_CMDS=""
+          while read -r FILE; do
+            [ -z "$FILE" ] && continue
+            # Extract date from filename: moodbox-backup-YYYYMMDD-HHMMSS.sql.gz
             FILE_DATE=$(echo "$FILE" | grep -oP '\d{8}' | head -1)
             if [ -n "$FILE_DATE" ] && [ "$FILE_DATE" -lt "$CUTOFF" ]; then
-              echo "🗑️ Deleting old backup: $FILE"
-              lftp -c "
-                set ftp:ssl-auth TLS
-                set ftp:ssl-force true
-                set ftp:ssl-protect-data true
-                set ssl:verify-certificate no
-                open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
-                rm '$REMOTE_DIR$FILE';
-              "
+              echo "🗑️ Will delete: $FILE"
+              DELETE_CMDS="${DELETE_CMDS}rm '${REMOTE_DIR}${FILE}';"
             fi
-          done
+          done <<< "$FILE_LIST"
+
+          # Step 3: Execute all deletions in one connection (if any)
+          if [ -n "$DELETE_CMDS" ]; then
+            lftp -c "
+              set ftp:ssl-auth TLS
+              set ftp:ssl-force true
+              set ftp:ssl-protect-data true
+              set ssl:verify-certificate no
+              open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
+              ${DELETE_CMDS}
+            "
+          fi
 
           echo "✅ Cleanup complete — kept last 7 days of backups"
