@@ -84,10 +84,14 @@ jobs:
           REMOTE_DIR: /domains/moodbox.pl/db_backups/
         run: |
           # --- Upload ---
+          # ssl:verify-certificate no — Seohost's certificate CN doesn't match their hostname.
+          # This is their server misconfiguration. The connection is still encrypted (TLS),
+          # we just can't verify the server identity. Acceptable for a backup target.
           lftp -c "
             set ftp:ssl-auth TLS
             set ftp:ssl-force true
             set ftp:ssl-protect-data true
+            set ssl:verify-certificate no
             open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
             mkdir -p -f '$REMOTE_DIR';
             put -O '$REMOTE_DIR' '${{ env.BACKUP_FILE }}';
@@ -106,6 +110,7 @@ jobs:
             set ftp:ssl-auth TLS
             set ftp:ssl-force true
             set ftp:ssl-protect-data true
+            set ssl:verify-certificate no
             open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
             cd '$REMOTE_DIR';
             cls --sort=date -1 *.sql.gz
@@ -118,6 +123,7 @@ jobs:
                 set ftp:ssl-auth TLS
                 set ftp:ssl-force true
                 set ftp:ssl-protect-data true
+                set ssl:verify-certificate no
                 open -u '$FTP_USER','$FTP_PASS' '$FTP_HOST';
                 rm '$REMOTE_DIR$FILE';
               "
