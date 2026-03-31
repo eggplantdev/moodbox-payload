@@ -29,7 +29,7 @@ export default function CollectionSliderProduct({
   }
 
   return (
-    <article className={cn(`w-full`, fullScreen && `flex max-h-[80vh] items-end gap-x-12 py-8`)}>
+    <article className={cn(`w-full`, fullScreen && `flex max-h-[80vh]  gap-x-12 py-8`)}>
       <div
         onClick={toggleFullScreen}
         className={cn(``, !fullScreen ? `aspect-square md:cursor-zoom-in` : `w-full`)}
@@ -43,7 +43,12 @@ export default function CollectionSliderProduct({
         />
       </div>
 
-      <div className={`w-full`}>
+      <div className={`w-full flex flex-col `}>
+        {fullScreen && (
+          <p className={`grow text-sm text-mood-dark-gray`}>
+            Sprawdź dostępność produktu i jego wariantów bezpośrednio na stronie producenta
+          </p>
+        )}
         <SelectedVariantDetails
           fullScreen={fullScreen}
           selected={selected}
