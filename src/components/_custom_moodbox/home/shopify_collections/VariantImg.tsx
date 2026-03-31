@@ -2,6 +2,7 @@ import Image from 'next/image'
 import React from 'react'
 import { ProductVariantT } from '@/lib/shopify/types'
 import { cn } from '@/utilities/ui'
+import shopifyLoader from '@/lib/shopify/image-loader'
 
 type VarT = {
   variant: ProductVariantT
@@ -22,7 +23,7 @@ export default function VariantImg({ variant, fullScreen, selected }: VarT) {
     >
       {image?.url && (
         <Image
-          unoptimized
+          loader={shopifyLoader}
           data-pin-nopin="true"
           data-pin-no-hover="true"
           fill={true}

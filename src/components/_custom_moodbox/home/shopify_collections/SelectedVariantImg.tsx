@@ -2,6 +2,7 @@ import Image from 'next/image'
 import React, { useEffect, useRef } from 'react'
 import { cn } from '@/utilities/ui'
 import { ProductVariantT } from '@/lib/shopify/types'
+import shopifyLoader from '@/lib/shopify/image-loader'
 import useCart from '@/lib/hooks/useCart'
 import { Checkbox } from '@/components/ui/checkbox'
 import Tag from '@/components/_custom_moodbox/common/Tag'
@@ -62,7 +63,7 @@ export default function SelectedVariantImg({
     <div className={cn(`relative mx-auto aspect-square rounded`)}>
       {src && (
         <Image
-          unoptimized
+          loader={shopifyLoader}
           ref={ref}
           fill={true}
           className={cn(`h-full w-full rounded`)}

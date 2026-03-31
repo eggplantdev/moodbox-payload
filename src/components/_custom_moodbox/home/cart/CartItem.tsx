@@ -3,6 +3,7 @@ import { X } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 import { ProductVariantT } from '@/lib/shopify/types'
+import shopifyLoader from '@/lib/shopify/image-loader'
 import useCart from '@/lib/hooks/useCart'
 
 type PropsT = {
@@ -20,12 +21,13 @@ export default function CartItem({ selected }: PropsT) {
       <div className={`relative size-[60px] rounded shrink-0  `}>
         {src && (
           <Image
-            unoptimized
+            loader={shopifyLoader}
             width={60}
             height={60}
             className={`h-full w-full rounded`}
             src={src}
             alt={''}
+            sizes="60px"
           />
         )}
       </div>
