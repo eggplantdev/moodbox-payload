@@ -14,7 +14,6 @@ const nextConfig = {
   serverExternalPackages: ['payload', 'pino', 'pino-pretty', 'thread-stream'],
 
   images: {
-    qualities: [100],
     localPatterns: [
       {
         pathname: '/api/media/file/**',

@@ -50,15 +50,12 @@ export const ImageMedia: React.FC<MediaProps> = (props) => {
   return (
     <picture className={cn(pictureClassName)}>
       <NextImage
-        // unoptimized={
-        //   src.toString().includes("localhost") || src.toString().includes("127.0.0.1")
-        // }
+        unoptimized
         alt={alt || ''}
         className={cn(imgClassName)}
         fill={fill}
         height={!fill ? height : undefined}
         placeholder="empty"
-        quality={100}
         // placeholder="blur"
         // blurDataURL={placeholderBlur}
         priority={priority}

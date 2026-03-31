@@ -22,6 +22,7 @@ export default function VariantImg({ variant, fullScreen, selected }: VarT) {
     >
       {image?.url && (
         <Image
+          unoptimized
           data-pin-nopin="true"
           data-pin-no-hover="true"
           fill={true}

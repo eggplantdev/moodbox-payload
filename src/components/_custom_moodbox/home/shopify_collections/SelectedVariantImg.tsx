@@ -62,7 +62,7 @@ export default function SelectedVariantImg({
     <div className={cn(`relative mx-auto aspect-square rounded`)}>
       {src && (
         <Image
-          quality={100}
+          unoptimized
           ref={ref}
           fill={true}
           className={cn(`h-full w-full rounded`)}

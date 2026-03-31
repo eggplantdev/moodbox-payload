@@ -19,7 +19,14 @@ export default function CartItem({ selected }: PropsT) {
     <li className={`flex gap-2`}>
       <div className={`relative size-[60px] rounded shrink-0  `}>
         {src && (
-          <Image width={60} height={60} className={`h-full w-full rounded`} src={src} alt={''} />
+          <Image
+            unoptimized
+            width={60}
+            height={60}
+            className={`h-full w-full rounded`}
+            src={src}
+            alt={''}
+          />
         )}
       </div>
 
