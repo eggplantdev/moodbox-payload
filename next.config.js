@@ -14,6 +14,7 @@ const nextConfig = {
   serverExternalPackages: ['payload', 'pino', 'pino-pretty', 'thread-stream'],
 
   images: {
+    minimumCacheTTL: 2678400, // 31 days — CMS images rarely change, updatedAt query param handles invalidation
     localPatterns: [
       {
         pathname: '/api/media/file/**',
