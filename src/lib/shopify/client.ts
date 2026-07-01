@@ -1,6 +1,4 @@
-// 'use server'
-
-import 'server-only' //
+'use server'
 
 import { env } from '@/lib/env'
 import { ShopifyResponseT } from './types'

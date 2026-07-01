@@ -49,8 +49,6 @@ export async function sendScheduledEmail({
     },
   })
 
-  console.log(scheduled)
-
   if (scheduled.totalDocs === 0) {
     console.log(`No scheduled emails found`)
     return results
