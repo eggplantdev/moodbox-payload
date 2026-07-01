@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import configPromise from '@payload-config'
 import { sendScheduledEmail } from '@/lib/shopify/webhooks/sendScheduledEmail'
-import { getPayload } from 'payload'
 import { env } from '@/lib/env'
 
 export const maxDuration = 300
@@ -12,23 +10,7 @@ export async function GET(req: NextRequest) {
   const authHeader: string | null = req.headers.get('authorization')
   const expected: string = `Bearer ${env.CRON_SECRET}`
 
-  const payload = await getPayload({
-    config: configPromise,
-  })
-
-  const cronExecutionTime = new Date().toISOString()
-
   if (authHeader !== expected) {
-    const text = `authHeader: ${authHeader}`
-
-    // TODO REMOVE AFTER TESTING
-    await payload.sendEmail({
-      to: env.EMAIL_USER,
-      subject: `CRON TEST EMAIL FAILED`,
-      text: text,
-      html: `<p>Cron execution time: ${cronExecutionTime}</p>`,
-    })
-
     return new NextResponse('Unauthorized', { status: 401 })
   }
 

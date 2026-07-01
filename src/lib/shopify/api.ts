@@ -28,7 +28,8 @@ export async function getAllCollections(): Promise<CollectionT[]> {
     }
   }>({
     query: GET_ALL_COLLECTIONS_QUERY,
-    cache: 'no-cache',
+    cache: 'force-cache',
+    revalidate: 3600,
     tags: ['collections'],
   })
 
