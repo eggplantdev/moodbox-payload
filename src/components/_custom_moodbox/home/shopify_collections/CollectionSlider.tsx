@@ -43,6 +43,11 @@ export default function CollectionSlider({
 
   const { cartItems } = useCart()
 
+  // Filter once so the click index and the dialog's initialSlide both index the SAME rendered
+  // list. Filtering inline in the map desynced raw indices from Swiper's rendered-child count and
+  // opened the wrong product. Applied in dev too so the two environments render identically.
+  const visibleSlides = slides.filter((slide) => slide.availableForSale)
+
   const allVariants = slides.flatMap((el) => el.variants.edges)
   const selectedWithinCatLen =
     allVariants.filter((variant) => cartItems.includes(variant.node.id)).length ?? 0
@@ -60,7 +65,9 @@ export default function CollectionSlider({
   }
 
   const actualSlidesPerView = isFullScreen ? 1 : numberOfVisibleSlides
-  const navigationActive = isFullScreen ? slides.length > 1 : slides.length > numberOfVisibleSlides
+  const navigationActive = isFullScreen
+    ? visibleSlides.length > 1
+    : visibleSlides.length > numberOfVisibleSlides
 
   const swiperConfig = {
     modules: [Pagination, Mousewheel, Keyboard],
@@ -69,7 +76,7 @@ export default function CollectionSlider({
     draggable: true,
     centeredSlides: false,
     initialSlide: initSlide,
-    loop: slides.length > actualSlidesPerView,
+    loop: visibleSlides.length > actualSlidesPerView,
     speed: 250,
     mousewheel: { forceToAxis: true, releaseOnEdges: true, sensitivity: 3.5 },
     keyboard: { enabled: true, onlyInViewport: true },
@@ -87,7 +94,7 @@ export default function CollectionSlider({
     setActiveSlide(index)
   }
 
-  if (slides.length < 1) return <></>
+  if (visibleSlides.length < 1) return <></>
 
   return (
     <>
@@ -113,9 +120,8 @@ export default function CollectionSlider({
             direction={'left'}
           />
           <Swiper {...swiperConfig} className={`mx-9 w-full`}>
-            {slides.map((slide, i) => {
+            {visibleSlides.map((slide, i) => {
               const isHeightReference = collectionIndex === 0 && i === 0
-              if (process.env.NODE_ENV !== 'development' && !slide.availableForSale) return
               return (
                 <SwiperSlide key={slide.id}>
                   <CollectionSliderProduct
@@ -143,7 +149,7 @@ export default function CollectionSlider({
 
       <CollectionSliderDialog
         title={title}
-        slides={slides}
+        slides={visibleSlides}
         initSlide={activeSlide}
         fullScreenDialogOpen={fullScreenDialogOpen}
         setFullScreenDialogOpen={setFullScreenDialogOpen}
