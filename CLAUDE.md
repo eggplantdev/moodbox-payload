@@ -2,6 +2,16 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> **▶ START HERE (active work):** Vercel Fluid Compute over the Hobby cap. Audit in
+> [`docs/plans/fluid-compute-audit.md`](docs/plans/fluid-compute-audit.md). **Caching fix DONE &
+> confirmed:** `getAllCollections` → `force-cache` + `revalidate: 3600` + `tags` (`api.ts`),
+> `revalidate` plumbed through `shopifyFetch` (`client.ts`); `/` went `ƒ` → `○` ISR (1h) in the build.
+> `draftMode()` was never the cause (reading `isEnabled` doesn't force dynamic); the fetch-level
+> `revalidate` drives ISR without any `export const revalidate`. **Remaining TODO (webhooks):** the 6
+> `moodbox.pl` subscriptions are dead (307-redirect → Shopify won't follow) — delete them, keep
+> `www.moodbox.pl`; and add + subscribe `collections/*` topics so collection edits invalidate the
+> cache (`products-updated/route.ts` only handles `products/*` + `inventory_levels/update`).
+
 ## Project Overview
 
 Moodbox Payload is a Payload CMS-powered e-commerce website with a hybrid architecture that integrates with Shopify. Shopify handles transactions (checkout, payments, inventory), while Payload CMS handles customer lifecycle management (surveys, analytics, email campaigns, admin dashboard).
