@@ -1,4 +1,6 @@
-'use server'
+// 'use server'
+
+import 'server-only' //
 
 import { env } from '@/lib/env'
 import { ShopifyResponseT } from './types'
@@ -8,6 +10,7 @@ type ShopifyFetchParamsT = {
   variables?: Record<string, unknown>
   cache?: RequestCache
   tags?: string[]
+  revalidate?: number
 }
 
 export async function shopifyFetch<T>({
@@ -15,7 +18,11 @@ export async function shopifyFetch<T>({
   variables = {},
   cache = 'no-cache',
   tags = [],
+  revalidate,
 }: ShopifyFetchParamsT): Promise<ShopifyResponseT<T> | null> {
+  const next: RequestInit['next'] = { tags }
+  if (revalidate) next.revalidate = revalidate
+
   const response = await fetch(env.SHOPIFY_STOREFRONT_API_URL, {
     method: 'POST',
     headers: {
@@ -24,10 +31,7 @@ export async function shopifyFetch<T>({
     },
     body: JSON.stringify({ query, variables }),
     cache,
-    next: {
-      // revalidate: process.env.NODE_ENV === 'development' ? 0 : 60,
-      tags,
-    },
+    next,
   })
 
   if (!response.ok) {
