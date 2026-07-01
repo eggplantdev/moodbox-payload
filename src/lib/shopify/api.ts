@@ -30,7 +30,7 @@ export async function getAllCollections(): Promise<CollectionT[]> {
     query: GET_ALL_COLLECTIONS_QUERY,
     cache: 'force-cache',
     revalidate: 3600,
-    tags: ['collections'],
+    tags: ['collections', 'products'],
   })
 
   if (!response) return []
